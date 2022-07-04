@@ -1,3 +1,5 @@
+use sbasic::lexer;
+
 use std::env;
 
 fn read_file(path: &str) -> Result<String, std::io::Error> {
@@ -19,7 +21,12 @@ fn main() {
         let file_name: String = argv.nth(1).unwrap();
         let program = read_file(file_name.as_str());
         match program {
-            Ok(source) => println!("{}", source),
+            Ok(source) => {
+                let mut instructions: Vec<lexer::Instruction> = Vec::new();
+                for (line_number, line) in source.lines().enumerate() {
+                    println!("[{}]: {}", line_number, line);
+                }
+            }
             Err(error) => println!("ERR: {}", error),
         }
     }
