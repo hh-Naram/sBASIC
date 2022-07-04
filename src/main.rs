@@ -24,7 +24,12 @@ fn main() {
             Ok(source) => {
                 let mut instructions: Vec<lexer::Instruction> = Vec::new();
                 for (line_number, line) in source.lines().enumerate() {
-                    println!("[{}]: {}", line_number, line);
+                    let tokenized_line = lexer::tokenize_line(line);
+
+                    match tokenized_line {
+                        Ok(x) => instructions.push(x),
+                        Err(err) => println!("Error at line {}: {}", line_number, err),
+                    }
                 }
             }
             Err(error) => println!("ERR: {}", error),

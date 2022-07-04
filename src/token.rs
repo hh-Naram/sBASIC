@@ -42,7 +42,7 @@ impl Token {
     pub fn to_token(symbol: &str) -> Option<Token> {
         match symbol {
             "PRINT" => Some(Token::Print),
-            "Input" => Some(Token::Input),
+            "INPUT" => Some(Token::Input),
             "LET" => Some(Token::Let),
             "REM" => Some(Token::Rem),
             "IF" => Some(Token::If),
