@@ -1,3 +1,4 @@
+use sbasic::interpreter;
 use sbasic::lexer;
 
 use std::env;
@@ -27,9 +28,14 @@ fn main() {
                     let tokenized_line = lexer::tokenize_line(line);
 
                     match tokenized_line {
-                        Ok(x) => instructions.push(x),
+                        Ok(instruction) => instructions.push(instruction),
                         Err(err) => println!("Error at line {}: {}", line_number, err),
                     }
+                }
+
+                match interpreter::interpret(instructions) {
+                    Ok(output) => println!("{}", output),
+                    Err(error) => println!("Failed to run program: {}", error),
                 }
             }
             Err(error) => println!("ERR: {}", error),
