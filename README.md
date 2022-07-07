@@ -18,14 +18,14 @@ Since this project is written in rust we can easily compile it using cargo using
 $ sBASIC [FILE]
 $ cargo run --release [FILE] # or using cargo
 ```
-Examples are located in the `res/` directory:
+Examples are located in the `examples/` directory:
 ```sh
-$ sBASIC res/Hello.bas
-$ sBASIC res/Fibonacci.bas
+$ sBASIC examples/Hello.bas
+$ sBASIC examples/Fibonacci.bas
 
 # Or using cargo 
-$ cargo run --release res/Hello.bas
-$ cargo run --release res/Fibonacci.bas
+$ cargo run --release examples/Hello.bas
+$ cargo run --release examples/Fibonacci.bas
 ```
 
 ## Features to come
