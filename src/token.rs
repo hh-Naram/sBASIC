@@ -130,7 +130,7 @@ impl Token {
         }
     }
 
-    pub fn operator_associavity(&self) -> Result<Associativity, String> {
+    pub fn operator_associativity(&self) -> Result<Associativity, String> {
         match *self {
             Token::UnaryMinus | Token::Bang => Ok(Associativity::Right),
             _ => Ok(Associativity::Left),
