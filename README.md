@@ -33,6 +33,12 @@ $ cargo run --release res/Fibonacci.bas
 - More keywords
 - Graphics
 
+## Refrences
+- [Wikipedia](https://en.wikipedia.org/wiki/BASIC)
+- [Crafting Interpreter](https://craftinginterpreters.com/]
+- [gwBASIC](https://github.com/microsoft/GW-BASIC]
+- [rBasic](https://github.com/travisbhartwell/rbasic)
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
