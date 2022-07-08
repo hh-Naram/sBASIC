@@ -45,17 +45,14 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                 },
                 token::Token::Input => match token_iter.next() {
                     Some(&(_, token::Token::Variable(ref variable))) => {
-                        let mut buffer = String::new();
+                        let mut input = String::new();
 
                         std::io::stdin()
-                            .read_line(&mut buffer)
-                            .expect("Failed to read from STDIN.");
-                        buffer = buffer.trim().to_string();
-                        let value = value_type::ValueType::Text(buffer);
-
-                        variables
-                            .entry(variable.clone().to_string())
-                            .or_insert(value);
+                            .read_line(&mut input)
+                            .expect("failed to read line");
+                        input = input.trim().to_string();
+                        let value = value_type::ValueType::Text(input);
+                        variables.insert(variable.clone().to_string(), value);
                     }
 
                     _ => {
