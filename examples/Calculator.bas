@@ -1,4 +1,4 @@
-10 "Adding 2 numbers together: "
+10 PRINT "Adding 2 numbers together: "
 20 PRINT "What is the first number? "
 30 INPUT X
 40 PRINT "What is the second number? "
