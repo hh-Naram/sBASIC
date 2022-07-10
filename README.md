@@ -30,7 +30,7 @@ $ cargo run --release examples/Graphics.bas
 - [Wiki: Graphics BASIC](https://en.wikipedia.org/wiki/Graphics_BASIC)
 - [GITHUB: gwBASIC](https://github.com/microsoft/GW-BASIC)
 - [GITHUB: rBasic](https://github.com/travisbhartwell/rbasic)
-- [Crafting Interpreter](https://craftinginterpreters.com/)k
+- [Crafting Interpreter](https://craftinginterpreters.com/)
 - [gwBASIC User Manual](http://www.antonis.de/qbebooks/gwbasman/)
 
 ## Contributing
