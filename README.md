@@ -1,4 +1,4 @@
-![logo](https://github.com/hh-Naram/sBASIC/tree/master/Branding/Logo.png)
+![logo](https://raw.githubusercontent.com/hh-Naram/sBASIC/master/Branding/Logo.png)
 
 Stupid BASIC interpreter written in rust because I needed one. Yes I know, many exist, but I just couldn't find one in the Arch AURs so I just made one myself. It is most certainly not a serious project, don't attack me. At its current point, it barely has any features, It won't be as complicated as something like `qbasic` or `gwbasic` but I want to be somewhat functionional language with graphics and a somewhat comprehensible syntax.
 
