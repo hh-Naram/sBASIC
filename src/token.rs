@@ -7,8 +7,10 @@ pub enum Token {
     If,
     Then,
     Goto,
+    End,
 
     Screen,
+    Clear,
     Line,
     Dot,
     Circle,
@@ -54,8 +56,10 @@ impl Token {
             "IF" => Some(Token::If),
             "THEN" => Some(Token::Then),
             "GOTO" => Some(Token::Goto),
+            "END" => Some(Token::End),
 
             "SCREEN" => Some(Token::Screen),
+            "CLEAR" => Some(Token::Clear),
             "LINE" => Some(Token::Line),
             "DOT" => Some(Token::Dot),
             "CIRCLE" => Some(Token::Circle),

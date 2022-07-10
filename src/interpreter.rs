@@ -25,11 +25,13 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
 
     let mut program: graphics_program::GraphicsProgram =
         graphics_program::GraphicsProgram::default();
-    let mut graphics = false;
 
-    loop {
+    let mut graphics = false;
+    let mut running = true;
+
+    while running {
         if graphics {
-            program.update();
+            program.update(&mut running);
         }
 
         let instruction_number = instruction_numbers[instruction_index];
@@ -186,7 +188,50 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                     }
                 }
 
+                token::Token::Clear => {
+                    match (
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                    ) {
+                        (
+                            Some(&(_, token::Token::Number(red))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(green))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(blue))),
+                        ) => {
+                            program.clear(red, green, blue);
+                        }
+                        _ => {
+                            return Err(format!(
+                                "ERR [{:?} | {}]: Invalid syntax for CLEAR.",
+                                instruction_number, position,
+                            ))
+                        }
+                    }
+                }
+
+                token::Token::Dot => {
+                    match (token_iter.next(), token_iter.next(), token_iter.next()) {
+                        (
+                            Some(&(_, token::Token::Number(_x))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(_y))),
+                        ) => {}
+                        _ => {
+                            return Err(format!(
+                                "ERR [{:?} | {}]: Invalid syntax for DOT.",
+                                instruction_number, position,
+                            ))
+                        }
+                    }
+                }
+
                 token::Token::Rem => {}
+                token::Token::End => running = false,
                 _ => {
                     return Err(format!(
                         "ERR [{:?} | {}]: Invalid syntax.",
