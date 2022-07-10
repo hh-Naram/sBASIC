@@ -85,6 +85,7 @@ pub fn tokenize_line(line: &str) -> Result<Instruction, String> {
                 '!' => tokens.push((position.try_into().unwrap(), token::Token::Bang)),
                 '(' => tokens.push((position.try_into().unwrap(), token::Token::Lparen)),
                 ')' => tokens.push((position.try_into().unwrap(), token::Token::Rparen)),
+                ',' => tokens.push((position.try_into().unwrap(), token::Token::Comma)),
                 _ => {
                     let mut token_chars: Vec<char> = char_iterator
                         .by_ref()

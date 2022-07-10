@@ -1,3 +1,4 @@
+use crate::graphics_program;
 use crate::lexer;
 use crate::parser;
 use crate::token;
@@ -22,7 +23,15 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
     let mut instruction_index = 0;
     let mut instruction_goto = false;
 
+    let mut program: graphics_program::GraphicsProgram =
+        graphics_program::GraphicsProgram::default();
+    let mut graphics = false;
+
     loop {
+        if graphics {
+            program.update();
+        }
+
         let instruction_number = instruction_numbers[instruction_index];
         let tokens = &instruction_ids[instruction_number];
         let mut token_iter = tokens.iter().peekable();
@@ -155,6 +164,28 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         }
                     }
                 }
+
+                token::Token::Screen => {
+                    match (token_iter.next(), token_iter.next(), token_iter.next()) {
+                        (
+                            Some(&(_, token::Token::Number(width))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(height))),
+                        ) => {
+                            program.window.set_size(width, height);
+                            program.window.show();
+
+                            graphics = true;
+                        }
+                        _ => {
+                            return Err(format!(
+                                "ERR [{:?} | {}]: Invalid syntax for SCREEN.",
+                                instruction_number, position,
+                            ))
+                        }
+                    }
+                }
+
                 token::Token::Rem => {}
                 _ => {
                     return Err(format!(

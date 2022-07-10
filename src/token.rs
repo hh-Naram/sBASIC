@@ -8,6 +8,11 @@ pub enum Token {
     Then,
     Goto,
 
+    Screen,
+    Line,
+    Dot,
+    Circle,
+
     Comment(String),
     Variable(String),
     Number(i32),
@@ -27,6 +32,7 @@ pub enum Token {
 
     Lparen,
     Rparen,
+    Comma,
 
     Bang,
     UnaryMinus,
@@ -49,6 +55,11 @@ impl Token {
             "THEN" => Some(Token::Then),
             "GOTO" => Some(Token::Goto),
 
+            "SCREEN" => Some(Token::Screen),
+            "LINE" => Some(Token::Line),
+            "DOT" => Some(Token::Dot),
+            "CIRCLE" => Some(Token::Circle),
+
             "+" => Some(Token::Plus),
             "-" => Some(Token::Minus),
             "/" => Some(Token::Divide),
@@ -63,6 +74,7 @@ impl Token {
 
             "(" => Some(Token::Lparen),
             ")" => Some(Token::Rparen),
+            "," => Some(Token::Comma),
             "!" => Some(Token::Bang),
 
             _ => None,
@@ -119,7 +131,7 @@ impl Token {
 
     pub fn operator_precedence(&self) -> Result<u8, String> {
         if !self.is_operator() {
-            return Err("Not an operator!".to_string());
+            return Err("ERR: Not an operator!".to_string());
         }
 
         match *self {

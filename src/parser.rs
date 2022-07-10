@@ -42,6 +42,7 @@ pub fn parse(
 
                 operator_stack.push(operator_token.clone());
             }
+            Some(&(_, token::Token::Comma)) => operator_stack.push(token::Token::Comma),
             Some(&(_, token::Token::Lparen)) => operator_stack.push(token::Token::Lparen),
             Some(&(_, token::Token::Rparen)) => loop {
                 match operator_stack.pop() {

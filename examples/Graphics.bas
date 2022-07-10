@@ -1,0 +1,2 @@
+10 SCREEN 1280 , 720
+20 INPUT temp
