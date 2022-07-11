@@ -12,6 +12,7 @@ pub enum Token {
     Screen,
     Clear,
     Line,
+    To,
     Dot,
     Circle,
 
@@ -61,6 +62,7 @@ impl Token {
             "SCREEN" => Some(Token::Screen),
             "CLEAR" => Some(Token::Clear),
             "LINE" => Some(Token::Line),
+            "To" => Some(Token::To),
             "DOT" => Some(Token::Dot),
             "CIRCLE" => Some(Token::Circle),
 

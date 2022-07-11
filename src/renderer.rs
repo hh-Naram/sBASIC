@@ -1,21 +1,28 @@
+use crate::shaders;
+
+use gl::types::*;
 use glfw::Context;
 
 use std::ffi::CString;
+use std::mem;
 use std::ptr;
 
-use crate::shaders;
+use cgmath::Matrix;
+use cgmath::SquareMatrix;
 
 const DEFAULT_WIDTH: u32 = 640;
 const DEFAULT_HEIGHT: u32 = 360;
 
-pub struct GraphicsProgram {
-    pub window: glfw::Window,
+pub struct Renderer {
     pub shader: u32,
 
+    pub mvp_matrix: cgmath::Matrix4<f32>,
+
     pub glfw: glfw::Glfw,
+    pub window: glfw::Window,
 }
 
-impl GraphicsProgram {
+impl Renderer {
     pub fn default() -> Self {
         let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 
@@ -33,6 +40,18 @@ impl GraphicsProgram {
         window.hide();
 
         gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
+
+        unsafe {
+            gl::VertexAttribPointer(
+                0,
+                2,
+                gl::FLOAT,
+                gl::FALSE,
+                2 * mem::size_of::<GLfloat>() as GLsizei,
+                ptr::null(),
+            );
+            gl::EnableVertexAttribArray(0);
+        }
 
         let shader = unsafe {
             let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
@@ -71,12 +90,25 @@ impl GraphicsProgram {
             shader_program
         };
 
-        GraphicsProgram {
-            window: window,
+        Renderer {
             shader: shader,
-
+            mvp_matrix: cgmath::Matrix4::identity(),
             glfw: glfw,
+            window: window,
         }
+    }
+
+    pub fn set_size(&mut self, width: i32, height: i32) {
+        self.window.set_size(width, height);
+        self.mvp_matrix = self.mvp_matrix
+            * cgmath::ortho::<f32>(
+                -width as f32,
+                width as f32,
+                -height as f32,
+                height as f32,
+                -1.0f32,
+                1.0f32,
+            );
     }
 
     pub fn update(&mut self, is_running: &mut bool) {
@@ -84,13 +116,17 @@ impl GraphicsProgram {
         self.glfw.poll_events();
 
         unsafe {
+            let uniform_name = CString::new("u_MVP").unwrap();
+            let uniform_location = gl::GetUniformLocation(self.shader, uniform_name.as_ptr());
+
             gl::UseProgram(self.shader);
+            gl::UniformMatrix4fv(uniform_location, 1, gl::FALSE, self.mvp_matrix.as_ptr());
         }
 
         *is_running = self.window.should_close();
     }
 
-    pub fn clear(&mut self, red: i32, green: i32, blue: i32) {
+    pub fn render_clear(&mut self, red: i32, green: i32, blue: i32) {
         unsafe {
             gl::ClearColor(
                 red as f32 / 255.0,
@@ -101,4 +137,8 @@ impl GraphicsProgram {
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
     }
+
+    pub fn render_dot(&mut self, _x: i32, _y: i32) {}
+    pub fn render_line(&mut self, _x1: i32, _y1: i32, _x2: i32, _y2: i32) {}
+    pub fn render_circle(&mut self, _x: i32, _y: i32, _r: i32) {}
 }

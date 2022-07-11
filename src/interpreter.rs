@@ -1,6 +1,6 @@
-use crate::graphics_program;
 use crate::lexer;
 use crate::parser;
+use crate::renderer;
 use crate::token;
 use crate::value_type;
 
@@ -23,8 +23,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
     let mut instruction_index = 0;
     let mut instruction_goto = false;
 
-    let mut program: graphics_program::GraphicsProgram =
-        graphics_program::GraphicsProgram::default();
+    let mut program: renderer::Renderer = renderer::Renderer::default();
 
     let mut graphics = false;
     let mut running = true;
@@ -54,6 +53,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         ))
                     }
                 },
+
                 token::Token::Input => match token_iter.next() {
                     Some(&(_, token::Token::Variable(ref variable))) => {
                         let mut input = String::new();
@@ -74,6 +74,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         ))
                     }
                 },
+
                 token::Token::Let => {
                     match (
                         token_iter.next(),
@@ -103,6 +104,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         }
                     }
                 }
+
                 token::Token::If => {
                     match (
                         parser::parse_and_eval(&mut token_iter, &variables),
@@ -136,6 +138,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         }
                     }
                 }
+
                 token::Token::Goto => {
                     instruction_goto = true;
                     match token_iter.next() {
@@ -174,7 +177,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                             Some(&(_, token::Token::Comma)),
                             Some(&(_, token::Token::Number(height))),
                         ) => {
-                            program.window.set_size(width, height);
+                            program.set_size(width, height);
                             program.window.show();
 
                             graphics = true;
@@ -203,7 +206,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                             Some(&(_, token::Token::Comma)),
                             Some(&(_, token::Token::Number(blue))),
                         ) => {
-                            program.clear(red, green, blue);
+                            program.render_clear(red, green, blue);
                         }
                         _ => {
                             return Err(format!(
@@ -217,10 +220,68 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                 token::Token::Dot => {
                     match (token_iter.next(), token_iter.next(), token_iter.next()) {
                         (
-                            Some(&(_, token::Token::Number(_x))),
+                            Some(&(_, token::Token::Number(x))),
                             Some(&(_, token::Token::Comma)),
-                            Some(&(_, token::Token::Number(_y))),
-                        ) => {}
+                            Some(&(_, token::Token::Number(y))),
+                        ) => {
+                            program.render_dot(x, y);
+                        }
+                        _ => {
+                            return Err(format!(
+                                "ERR [{:?} | {}]: Invalid syntax for DOT.",
+                                instruction_number, position,
+                            ))
+                        }
+                    }
+                }
+
+                token::Token::Line => {
+                    match (
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                    ) {
+                        (
+                            Some(&(_, token::Token::Number(x1))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(y1))),
+                            Some(&(_, token::Token::To)),
+                            Some(&(_, token::Token::Number(x2))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(y2))),
+                        ) => {
+                            program.render_line(x1, y1, x2, y2);
+                        }
+                        _ => {
+                            return Err(format!(
+                                "ERR [{:?} | {}]: Invalid syntax for DOT.",
+                                instruction_number, position,
+                            ))
+                        }
+                    }
+                }
+
+                token::Token::Circle => {
+                    match (
+                        token_iter.next(), //x
+                        token_iter.next(), //,
+                        token_iter.next(), //y
+                        token_iter.next(), //,
+                        token_iter.next(), //r
+                    ) {
+                        (
+                            Some(&(_, token::Token::Number(x))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(y))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(r))),
+                        ) => {
+                            program.render_circle(x, y, r);
+                        }
                         _ => {
                             return Err(format!(
                                 "ERR [{:?} | {}]: Invalid syntax for DOT.",
