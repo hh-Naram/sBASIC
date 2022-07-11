@@ -25,6 +25,33 @@ $ cargo run --release examples/Calculator.bas
 $ cargo run --release examples/Graphics.bas
 ...
 ```
+
+## Features
+- Somewhat of a modern syntax.
+- Basic graphics capabilities.
+- Performance and speed.
+
+## Features to come
+- Better syntax for commas.
+- Functions.
+- Maths functions _(sin/arcsin, cos/arccos, tan/arctan, ...)_.
+
+## Keywords
+Basic operations:
+- `PRINT`/`INPUT` : Print data to the console, or read data from the console.
+- `IF`/`THEN`/`GOTO` : Conditional operations and jumps.
+- `LET` : Create/Modify a variable.
+- `END` : End program.
+- `REM` : Comment
+
+Graphics Operations:
+- `SCREEN` : Setup and initialize a window.
+- `CLEAR` : Clear window with a clear color.
+- `COLOR` : Set draw color.
+- `LINE`/`TO` : Render a line from `(x1, y1)` to `(x2, y2)`.
+- `DOT` : Render a dot.
+- `CIRCLE` : Render a circle.
+
 ## References
 - [Wiki: BASIC](https://en.wikipedia.org/wiki/BASIC)
 - [Wiki: Graphics BASIC](https://en.wikipedia.org/wiki/Graphics_BASIC)
@@ -34,5 +61,5 @@ $ cargo run --release examples/Graphics.bas
 - [gwBASIC User Manual](http://www.antonis.de/qbebooks/gwbasman/)
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome as working on this project solo is not as fun as you can imagine, _also I basically never finish projects_. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.

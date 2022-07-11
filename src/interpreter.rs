@@ -217,6 +217,36 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                     }
                 }
 
+                token::Token::Color => {
+                    match (
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                    ) {
+                        (
+                            Some(&(_, token::Token::Number(red))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(green))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(blue))),
+                            Some(&(_, token::Token::Comma)),
+                            Some(&(_, token::Token::Number(alpha))),
+                        ) => {
+                            program.render_setcolor(red, green, blue, alpha);
+                        }
+                        _ => {
+                            return Err(format!(
+                                "ERR [{:?} | {}]: Invalid syntax for COLOR.",
+                                instruction_number, position,
+                            ))
+                        }
+                    }
+                }
+
                 token::Token::Dot => {
                     match (token_iter.next(), token_iter.next(), token_iter.next()) {
                         (
@@ -267,11 +297,11 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
 
                 token::Token::Circle => {
                     match (
-                        token_iter.next(), //x
-                        token_iter.next(), //,
-                        token_iter.next(), //y
-                        token_iter.next(), //,
-                        token_iter.next(), //r
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
+                        token_iter.next(),
                     ) {
                         (
                             Some(&(_, token::Token::Number(x))),

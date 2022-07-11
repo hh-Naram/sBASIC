@@ -134,9 +134,11 @@ impl Renderer {
                 blue as f32 / 255.0,
                 1.0,
             );
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
+
+    pub gn render_setcolor(&mut self, _r: i32, _g: i32, _b: i32, _a: i32) {}
 
     pub fn render_dot(&mut self, _x: i32, _y: i32) {}
     pub fn render_line(&mut self, _x1: i32, _y1: i32, _x2: i32, _y2: i32) {}

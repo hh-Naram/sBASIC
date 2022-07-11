@@ -14,9 +14,10 @@ pub const FRAGMENT_SHADER_SOURCE: &str = r#"
     #version 330 core
 
     out vec4 a_OutColor;
+    uniform vec4 u_Color;
 
     void main()
     {
-        a_OutColor = vec4(1.0);
+        a_OutColor = u_Color;
     }
 "#;
