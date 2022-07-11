@@ -42,7 +42,7 @@ Basic operations:
 - `IF`/`THEN`/`GOTO` : Conditional operations and jumps.
 - `LET` : Create/Modify a variable.
 - `END` : End program.
-- `REM` : Comment.
+- `REM` : Comment
 
 Graphics Operations:
 - `SCREEN` : Setup and initialize a window.
