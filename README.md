@@ -52,6 +52,10 @@ Graphics Operations:
 - `DOT` : Render a dot.
 - `CIRCLE` : Render a circle.
 
+## Graphics example screenshot
+This is what the example in `examples/Graphics.bas` gives, I am pretty proud of it so I decided to include this screenshot.
+![graphics_screenshot](https://raw.githubusercontent.com/hh-Naram/sBASIC/master/screenshots/Graphics.png)
+
 ## References
 - [Wiki: BASIC](https://en.wikipedia.org/wiki/BASIC)
 - [Wiki: Graphics BASIC](https://en.wikipedia.org/wiki/Graphics_BASIC)
