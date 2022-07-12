@@ -2,7 +2,7 @@
 
 A stupid BASIC interpreter **(sBASIC)** written in rust because I needed one. Yes I know, many exist, but I just couldn't find one in the Arch AURs so I just made one myself. It is most certainly not a serious project, don't attack me. At its current point, it barely has any features, It won't be as complicated as something like `qbasic` or `gwbasic` but I want to be somewhat functionional language with graphics and a somewhat comprehensible syntax.
 
-I decided to use [Rust](https://rust-lang.org) instead of my beloved C for the soul reason that I want to move on to something new, I cannot say I am the largest fan of the language but it looks promissing. I was debating if I should use `Vulkan` instead of `OpenGL` but using `Vulkan` seemed maybe a bit overkill, maybe in a future update I'll make the switch to get better performance?
+I decided to use [Rust](https://rust-lang.org) instead of my beloved C for the soul reason that I want to move on to something new, I cannot say I am the largest fan of the language but it looks promissing. I was debating if I should use `Vulkan` instead of `OpenGL` but using `Vulkan` seemed maybe a bit overkill, maybe in a future update I'll make the switch to get better performance? But I ended up using [SDL2](https://www.libsdl.org/) since it uses an `OpenGL` backend and is relatively simple for the scale of this project.
 
 ## Usage
 Since this project is written in rust we can easily compile it using cargo using `cargo build --release`
