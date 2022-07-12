@@ -178,8 +178,6 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                             Some(&(_, token::Token::Number(height))),
                         ) => {
                             program.set_size(width, height);
-                            program.window.show();
-
                             graphics = true;
                         }
                         _ => {
@@ -192,29 +190,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                 }
 
                 token::Token::Clear => {
-                    match (
-                        token_iter.next(),
-                        token_iter.next(),
-                        token_iter.next(),
-                        token_iter.next(),
-                        token_iter.next(),
-                    ) {
-                        (
-                            Some(&(_, token::Token::Number(red))),
-                            Some(&(_, token::Token::Comma)),
-                            Some(&(_, token::Token::Number(green))),
-                            Some(&(_, token::Token::Comma)),
-                            Some(&(_, token::Token::Number(blue))),
-                        ) => {
-                            program.render_clear(red, green, blue);
-                        }
-                        _ => {
-                            return Err(format!(
-                                "ERR [{:?} | {}]: Invalid syntax for CLEAR.",
-                                instruction_number, position,
-                            ))
-                        }
-                    }
+                    program.render_clear();
                 }
 
                 token::Token::Color => {
@@ -224,8 +200,6 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         token_iter.next(),
                         token_iter.next(),
                         token_iter.next(),
-                        token_iter.next(),
-                        token_iter.next(),
                     ) {
                         (
                             Some(&(_, token::Token::Number(red))),
@@ -233,10 +207,8 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                             Some(&(_, token::Token::Number(green))),
                             Some(&(_, token::Token::Comma)),
                             Some(&(_, token::Token::Number(blue))),
-                            Some(&(_, token::Token::Comma)),
-                            Some(&(_, token::Token::Number(alpha))),
                         ) => {
-                            program.render_setcolor(red, green, blue, alpha);
+                            program.render_setcolor(red, green, blue);
                         }
                         _ => {
                             return Err(format!(
@@ -288,7 +260,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         }
                         _ => {
                             return Err(format!(
-                                "ERR [{:?} | {}]: Invalid syntax for DOT.",
+                                "ERR [{:?} | {}]: Invalid syntax for LINE.",
                                 instruction_number, position,
                             ))
                         }
@@ -314,7 +286,7 @@ pub fn interpret(instructions: Vec<lexer::Instruction>) -> Result<String, String
                         }
                         _ => {
                             return Err(format!(
-                                "ERR [{:?} | {}]: Invalid syntax for DOT.",
+                                "ERR [{:?} | {}]: Invalid syntax for CIRCLE.",
                                 instruction_number, position,
                             ))
                         }

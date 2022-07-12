@@ -5,7 +5,4 @@ edition = "2021"
 
 [dependencies]
 itertools = "0.5"
-
-gl = "0.14"
-glfw = "0.45"
-cgmath = "0.18"
+sdl2 = "0.35"

@@ -1,146 +1,82 @@
-use crate::shaders;
+use sdl2::event::Event;
+use sdl2::pixels::Color;
 
-use gl::types::*;
-use glfw::Context;
-
-use std::ffi::CString;
-use std::mem;
-use std::ptr;
-
-use cgmath::Matrix;
-use cgmath::SquareMatrix;
+use std::f32::consts::PI;
 
 const DEFAULT_WIDTH: u32 = 640;
 const DEFAULT_HEIGHT: u32 = 360;
 
 pub struct Renderer {
-    pub shader: u32,
-
-    pub mvp_matrix: cgmath::Matrix4<f32>,
-
-    pub glfw: glfw::Glfw,
-    pub window: glfw::Window,
+    canvas: sdl2::render::WindowCanvas,
+    context: sdl2::Sdl,
 }
 
 impl Renderer {
     pub fn default() -> Self {
-        let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+        let sdl_context = sdl2::init().unwrap();
+        let video_subsystem = sdl_context.video().unwrap();
 
-        let (mut window, _) = glfw
-            .create_window(
-                DEFAULT_WIDTH,
-                DEFAULT_HEIGHT,
-                "sBASIC",
-                glfw::WindowMode::Windowed,
-            )
-            .expect("ERR: Could not create GLFW window.");
-
-        window.set_resizable(false);
-        window.make_current();
+        let mut window = video_subsystem
+            .window("sBASIC", DEFAULT_WIDTH, DEFAULT_HEIGHT)
+            .position_centered()
+            .build()
+            .unwrap();
         window.hide();
 
-        gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
-
-        unsafe {
-            gl::VertexAttribPointer(
-                0,
-                2,
-                gl::FLOAT,
-                gl::FALSE,
-                2 * mem::size_of::<GLfloat>() as GLsizei,
-                ptr::null(),
-            );
-            gl::EnableVertexAttribArray(0);
-        }
-
-        let shader = unsafe {
-            let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
-            let fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
-
-            let vertex_shader_source =
-                CString::new(shaders::VERTEX_SHADER_SOURCE.as_bytes()).unwrap();
-            let fragment_shader_source =
-                CString::new(shaders::FRAGMENT_SHADER_SOURCE.as_bytes()).unwrap();
-
-            gl::ShaderSource(
-                vertex_shader,
-                1,
-                &vertex_shader_source.as_ptr(),
-                ptr::null(),
-            );
-
-            gl::ShaderSource(
-                fragment_shader,
-                1,
-                &fragment_shader_source.as_ptr(),
-                ptr::null(),
-            );
-
-            gl::CompileShader(fragment_shader);
-            gl::CompileShader(vertex_shader);
-
-            let shader_program = gl::CreateProgram();
-            gl::AttachShader(shader_program, vertex_shader);
-            gl::AttachShader(shader_program, fragment_shader);
-            gl::LinkProgram(shader_program);
-
-            gl::DeleteShader(vertex_shader);
-            gl::DeleteShader(fragment_shader);
-
-            shader_program
-        };
+        let canvas = window.into_canvas().build().unwrap();
 
         Renderer {
-            shader: shader,
-            mvp_matrix: cgmath::Matrix4::identity(),
-            glfw: glfw,
-            window: window,
+            canvas: canvas,
+            context: sdl_context,
         }
     }
 
     pub fn set_size(&mut self, width: i32, height: i32) {
-        self.window.set_size(width, height);
-        self.mvp_matrix = self.mvp_matrix
-            * cgmath::ortho::<f32>(
-                -width as f32,
-                width as f32,
-                -height as f32,
-                height as f32,
-                -1.0f32,
-                1.0f32,
-            );
+        let window = self.canvas.window_mut();
+        window.set_size(width as u32, height as u32).unwrap();
+        window.show();
     }
 
     pub fn update(&mut self, is_running: &mut bool) {
-        self.window.swap_buffers();
-        self.glfw.poll_events();
+        self.canvas.present();
 
-        unsafe {
-            let uniform_name = CString::new("u_MVP").unwrap();
-            let uniform_location = gl::GetUniformLocation(self.shader, uniform_name.as_ptr());
-
-            gl::UseProgram(self.shader);
-            gl::UniformMatrix4fv(uniform_location, 1, gl::FALSE, self.mvp_matrix.as_ptr());
-        }
-
-        *is_running = self.window.should_close();
-    }
-
-    pub fn render_clear(&mut self, red: i32, green: i32, blue: i32) {
-        unsafe {
-            gl::ClearColor(
-                red as f32 / 255.0,
-                green as f32 / 255.0,
-                blue as f32 / 255.0,
-                1.0,
-            );
-            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        for event in self.context.event_pump().unwrap().poll_iter() {
+            match event {
+                Event::Quit { .. } => *is_running = false,
+                _ => {}
+            }
         }
     }
+    pub fn render_clear(&mut self) {
+        self.canvas.clear();
+        self.canvas.present();
+    }
+    pub fn render_setcolor(&mut self, red: i32, green: i32, blue: i32) {
+        self.canvas
+            .set_draw_color(Color::RGB(red as u8, green as u8, blue as u8));
+    }
 
-    pub gn render_setcolor(&mut self, _r: i32, _g: i32, _b: i32, _a: i32) {}
+    pub fn render_dot(&mut self, x: i32, y: i32) {
+        let point = sdl2::rect::Point::new(x, y);
+        self.canvas.draw_point(point).unwrap();
+    }
 
-    pub fn render_dot(&mut self, _x: i32, _y: i32) {}
-    pub fn render_line(&mut self, _x1: i32, _y1: i32, _x2: i32, _y2: i32) {}
-    pub fn render_circle(&mut self, _x: i32, _y: i32, _r: i32) {}
+    pub fn render_line(&mut self, x1: i32, y1: i32, x2: i32, y2: i32) {
+        let points = [
+            sdl2::rect::Point::new(x1, y1),
+            sdl2::rect::Point::new(x2, y2),
+        ];
+        self.canvas.draw_line(points[0], points[1]).unwrap();
+    }
+
+    pub fn render_circle(&mut self, pos_x: i32, pos_y: i32, r: i32) {
+        let mut alpha: f32 = 0.0;
+        while alpha < 2.0 * PI {
+            let x = alpha.cos() * (r as f32) + (pos_x as f32);
+            let y = alpha.sin() * (r as f32) + (pos_y as f32);
+            self.render_dot(x as i32, y as i32);
+
+            alpha += 0.001;
+        }
+    }
 }

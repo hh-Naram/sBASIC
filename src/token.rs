@@ -64,7 +64,7 @@ impl Token {
             "CLEAR" => Some(Token::Clear),
             "COLOR" => Some(Token::Color),
             "LINE" => Some(Token::Line),
-            "To" => Some(Token::To),
+            "TO" => Some(Token::To),
             "DOT" => Some(Token::Dot),
             "CIRCLE" => Some(Token::Circle),
 
